@@ -1,0 +1,105 @@
+syntax = "proto3";
+package types;
+
+message Payload {
+	bytes data = 1;
+}
+
+message Hashload {
+	bytes hash = 1;
+}
+
+message Vector {
+	repeated Payload payloads = 1;
+}
+
+message HashVector {
+	repeated Hashload hashloads = 1;
+}
+
+message Bloom {
+	bytes data = 1;
+}
+
+message Stage {
+	oneof value{
+		StageAB AB = 1;
+		StageVC VC = 2;
+		StageMV MV = 3;
+		StageBC BC = 4;
+		StageRB RB = 5;
+		StageEB EB = 6;
+	}
+}
+
+message StageAB {
+	uint32 ID = 1;
+	uint32 round = 2;
+	uint32 step = 3;
+}
+
+message StageVC {
+	uint32 ID = 1;
+	uint32 round = 2;
+}
+
+message StageMV {
+	uint32 ID = 1;
+	uint32 step = 2;
+}
+
+message StageBC {
+	uint32 ID = 1;
+	uint32 step = 2;
+}
+
+message StageRB {
+	uint32 ID = 1;
+	uint32 step = 2;
+}
+
+message StageEB {
+	uint32 ID = 1;
+	uint32 step = 2;
+}
+
+message Stages {
+	Stage AB = 1;
+	Stage VC = 2;
+	Stage MV = 3;
+	Stage BC = 4;
+	Stage RB = 5;
+	Stage EB = 6;
+}
+
+message Sender {
+	uint32 ID = 1;
+	string addr = 2;
+}
+
+message Broadcaster {
+	uint32 ID = 1;
+	string addr = 2;
+}
+
+message Message {
+	oneof value{
+		MessageProtocol protocol = 1;
+		MessageAtomic atomic = 2;
+	}
+}
+
+message MessageProtocol {
+	Stage stage = 1;
+	Payload payload = 2;
+	Vector vector = 3;
+	Stages stages = 4;
+	Sender sender = 5;
+	Broadcaster broadcaster = 6;
+}
+
+message MessageAtomic {
+	Payload payload = 1;
+	Stages stages = 2;
+	Sender sender = 3;
+}
