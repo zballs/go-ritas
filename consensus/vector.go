@@ -44,7 +44,7 @@ func VC_AddChildMV(vccb *ControlBlock, env *Env) {
 func VectorConsensus(vccb *ControlBlock, ctx context.Context, env *Env, args *Args) *Args {
 
 	// Set stage
-	args.SetArg(vccb.Stage)
+	args.Set(vccb.Stage)
 
 	// Create child context
 	childCtx, cancel := context.WithCancel(ctx)
@@ -95,7 +95,7 @@ func VectorConsensus(vccb *ControlBlock, ctx context.Context, env *Env, args *Ar
 		vector = ToVector(payloads)
 
 		// Set payload wrap of vector
-		args.SetArg(vector.PayloadWrap())
+		args.Set(vector.PayloadWrap())
 
 		// Create new child context
 		childCtx, cancel = context.WithCancel(ctx)
@@ -119,7 +119,7 @@ func VectorConsensus(vccb *ControlBlock, ctx context.Context, env *Env, args *Ar
 		VC_AddChildMV(vccb, env)
 
 		// Set stage
-		args.SetArg(vccb.Stage)
+		args.Set(vccb.Stage)
 	}
 
 	// Cancel child context

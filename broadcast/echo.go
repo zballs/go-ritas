@@ -30,7 +30,7 @@ func EchoBroadcast(ebcb *ControlBlock, ctx context.Context, env *Env, args *Args
 	stage := &*(args.GetStage())
 
 	// Set stage, sender, broadcaster
-	args.SetArgs(ebcb.Stage, env.Sender(), env.Broadcaster())
+	args.SetMultiple(ebcb.Stage, env.Sender(), env.Broadcaster())
 
 	// Get stages
 	stages := &*(args.GetStages())
@@ -54,6 +54,7 @@ func EchoBroadcast(ebcb *ControlBlock, ctx context.Context, env *Env, args *Args
 
 			if ebcb.OutOfContext(msg, stages) {
 				// handle out of context message
+				// ebcb.Warn("Out of context", "msg", msg.String())
 				env.ServerPutMessage(ctx, msg) //for now
 				continue
 			}
@@ -98,12 +99,14 @@ func EchoBroadcast(ebcb *ControlBlock, ctx context.Context, env *Env, args *Args
 
 		// Set stage, broadcaster
 		args = msg.ToArgs()
-		args.SetArgs(ebcb.Stage, env.Broadcaster())
+		args.SetMultiple(ebcb.Stage, env.Broadcaster())
 
 		// Multicast message
 		msg = ToMessageProtocol(args)
 
 		MulticastMessage(ctx, env, msg)
+
+		ebcb.Info("Step 2")
 
 	FOR_LOOP_2:
 		for {
@@ -112,6 +115,7 @@ func EchoBroadcast(ebcb *ControlBlock, ctx context.Context, env *Env, args *Args
 
 			if ebcb.OutOfContext(msg, stages) {
 				// handle out of context message
+				// ebcb.Warn("Out of context", "msg", msg.String())
 				env.ServerPutMessage(ctx, msg) //for now
 				continue
 			}
@@ -124,7 +128,7 @@ func EchoBroadcast(ebcb *ControlBlock, ctx context.Context, env *Env, args *Args
 
 				// Set stage, broadcaster
 				args = msg.ToArgs()
-				args.SetArgs(ebcb.Stage, env.Broadcaster())
+				args.SetMultiple(ebcb.Stage, env.Broadcaster())
 
 				// Multicast message
 				msg = ToMessageProtocol(args)
@@ -153,7 +157,7 @@ func EchoBroadcast(ebcb *ControlBlock, ctx context.Context, env *Env, args *Args
 					// Deliver message to replica
 					env.ReplicaDeliver(ctx, msg, stage)
 
-					ebcb.Info("Delivery", "stage", stage.GetValue(), "ebcb", ebcb.GetID())
+					// ebcb.Info("Delivery", "stage", stage.GetValue(), "ebcb", ebcb.GetID())
 
 					break FOR_LOOP_2
 				}
@@ -165,5 +169,7 @@ func EchoBroadcast(ebcb *ControlBlock, ctx context.Context, env *Env, args *Args
 
 		// Reset cb.Stage step
 		ebcb.ResetStep()
+
+		ebcb.Info("Looping")
 	}
 }

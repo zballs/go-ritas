@@ -4,6 +4,7 @@ import (
 	"context"
 	. "github.com/zballs/goRITAS/broadcast"
 	. "github.com/zballs/goRITAS/types"
+	"log"
 )
 
 func MV_ControlBlock(parent *ControlBlock, env *Env) *ControlBlock {
@@ -41,6 +42,7 @@ func ValidPayloads(env *Env, payload *Payload, vector *Vector) bool {
 	for _, p := range vector.GetPayloads() {
 
 		if !payload.IsEqual(p) {
+			log.Printf("%v != %v", payload.String(), p.String())
 			continue
 		}
 
@@ -57,7 +59,7 @@ func ValidPayloads(env *Env, payload *Payload, vector *Vector) bool {
 func MultivalueConsensus(mvcb *ControlBlock, ctx context.Context, env *Env, args *Args) *Args {
 
 	// Set stage
-	args.SetArg(mvcb.Stage)
+	args.Set(mvcb.Stage)
 
 	// Create child context
 	childCtx, cancel := context.WithCancel(ctx)
@@ -107,15 +109,16 @@ func MultivalueConsensus(mvcb *ControlBlock, ctx context.Context, env *Env, args
 		}
 	}
 
+	// Cancel child context
+	cancel()
+
 	// Increment cb.Stage step
 	mvcb.IncrementStep()
 
 	// Set stage, payload, vector
-	args.SetArgs(mvcb.Stage, payload, ToVector(payloads))
+	args.SetMultiple(mvcb.Stage, payload, ToVector(payloads))
 
-	// Cancel child context, create new one
-	cancel()
-
+	// Create new child context
 	childCtx, cancel = context.WithCancel(ctx)
 
 	// Echo broadcast
@@ -147,6 +150,8 @@ FOR_LOOP_1:
 				if count == env.N()-env.F() {
 					break FOR_LOOP_1
 				}
+			} else {
+				mvcb.Info("Invalid Payloads")
 			}
 		}
 
@@ -158,6 +163,8 @@ FOR_LOOP_1:
 
 	value = one
 	counts = make(map[string]uint32)
+
+	mvcb.Info("Payloads", "length", len(payloads))
 
 FOR_LOOP_2:
 	for _, p := range payloads {
@@ -173,7 +180,7 @@ FOR_LOOP_2:
 			for _, p := range payloads {
 
 				if p != nil && p != payload {
-
+					mvcb.Info("Broken")
 					break FOR_LOOP_2
 
 				}
@@ -184,7 +191,7 @@ FOR_LOOP_2:
 	}
 
 	// Set payload
-	args.SetArg(PayloadFromUint32(value))
+	args.Set(PayloadFromUint32(value))
 
 	// Create new child context
 	childCtx, cancel = context.WithCancel(ctx)
@@ -199,7 +206,7 @@ FOR_LOOP_2:
 	if args.GetPayload().ToUint32() == one {
 
 		// set empty payload
-		args.SetArg(EmptyPayload())
+		args.Set(EmptyPayload())
 
 		return args
 	}
@@ -207,7 +214,7 @@ FOR_LOOP_2:
 	if value == two {
 
 		// set payload
-		args.SetArg(payload)
+		args.Set(payload)
 
 		return args
 	}
@@ -242,7 +249,7 @@ FOR_LOOP_3:
 	}
 
 	// set payload
-	args.SetArg(payload)
+	args.Set(payload)
 
 	return args
 }

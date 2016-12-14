@@ -44,7 +44,7 @@ func (cb *ControlBlock) OutOfContext(msg *Message, stages *Stages) bool {
 		return true
 	}
 
-	if !cb.SameStage(msg.GetStage()) {
+	if !cb.SameID(msg.GetStage()) {
 		return true
 	}
 

@@ -45,20 +45,20 @@ func main() {
 		env.Run()
 
 		// Cb for atomic broadcast with vector consensus
-		// abcb := ABVEC_ControlBlock(env)
+		abcb := ABVEC_ControlBlock(env)
 
 		// Cb for atomic broadcast with multivalue consensus
-		abcb := ABMV_ControlBlock(env)
+		// abcb := ABMV_ControlBlock(env)
 
 		// Context
 		ctx := context.Background()
 
 		// Args
 		args := NewArgs()
-		args.SetArgs(Payloadz[idx])
+		args.Set(Payloadz[idx])
 
-		// AtomicBroadcastVEC
-		go AtomicBroadcastMV(abcb, ctx, env, args)
+		go AtomicBroadcastVEC(abcb, ctx, env, args)
+		// go AtomicBroadcastMV(abcb, ctx, env, args)
 	}
 
 	// Wait

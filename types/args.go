@@ -50,7 +50,7 @@ func (args *Args) GetBroadcaster() *Broadcaster {
 
 // Set
 
-func (args *Args) SetArg(arg interface{}) bool {
+func (args *Args) Set(arg interface{}) bool {
 
 	switch arg.(type) {
 
@@ -81,10 +81,10 @@ func (args *Args) SetArg(arg interface{}) bool {
 	return true
 }
 
-func (args *Args) SetArgs(argz ...interface{}) {
+func (args *Args) SetMultiple(argz ...interface{}) {
 
 	for _, arg := range argz {
-		args.SetArg(arg)
+		args.Set(arg)
 	}
 }
 

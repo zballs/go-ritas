@@ -31,7 +31,7 @@ func ReliableBroadcast(rbcb *ControlBlock, ctx context.Context, env *Env, args *
 	stage := &*(args.GetStage())
 
 	// Set stage, sender, broadcaster
-	args.SetArgs(rbcb.Stage, env.Sender(), env.Broadcaster())
+	args.SetMultiple(rbcb.Stage, env.Sender(), env.Broadcaster())
 
 	// Get stages
 	stages := &*(args.GetStages())
@@ -130,7 +130,7 @@ func ReliableBroadcast(rbcb *ControlBlock, ctx context.Context, env *Env, args *
 
 		// Set stage, broadcaster
 		args = msg.ToArgs()
-		args.SetArgs(rbcb.Stage, env.Broadcaster())
+		args.SetMultiple(rbcb.Stage, env.Broadcaster())
 
 		// Multicast message
 		msg = ToMessageProtocol(args)
@@ -143,7 +143,7 @@ func ReliableBroadcast(rbcb *ControlBlock, ctx context.Context, env *Env, args *
 			rbcb.IncrementStep()
 
 			// Set stage
-			args.SetArg(rbcb.Stage)
+			args.Set(rbcb.Stage)
 
 			// Multicast message
 			msg = ToMessageProtocol(args)
@@ -171,7 +171,7 @@ func ReliableBroadcast(rbcb *ControlBlock, ctx context.Context, env *Env, args *
 
 					// Set stage, broadcaster
 					args = msg.ToArgs()
-					args.SetArgs(rbcb.Stage, env.Broadcaster())
+					args.SetMultiple(rbcb.Stage, env.Broadcaster())
 
 					// Multicast message
 					msg = ToMessageProtocol(args)
@@ -231,7 +231,7 @@ func ReliableBroadcast(rbcb *ControlBlock, ctx context.Context, env *Env, args *
 
 			// Set stage, broadcaster
 			args = msg.ToArgs()
-			args.SetArgs(rbcb.Stage, env.Broadcaster())
+			args.SetMultiple(rbcb.Stage, env.Broadcaster())
 
 			// Multicast message
 			msg = ToMessageProtocol(args)
@@ -246,6 +246,7 @@ func ReliableBroadcast(rbcb *ControlBlock, ctx context.Context, env *Env, args *
 
 			if rbcb.OutOfContext(msg, stages) {
 				// handle out of context message
+				// rbcb.Warn("Out of context", "msg", msg.String())
 				env.ServerPutMessage(ctx, msg) //for now
 				continue
 			}
@@ -256,7 +257,7 @@ func ReliableBroadcast(rbcb *ControlBlock, ctx context.Context, env *Env, args *
 
 			case 1:
 
-				env.ServerPutMessage(ctx, msg) //for now
+				env.ServerPutMessage(ctx, msg)
 
 			case 2:
 
@@ -279,7 +280,7 @@ func ReliableBroadcast(rbcb *ControlBlock, ctx context.Context, env *Env, args *
 
 					// Set stage, broadcaster
 					args = msg.ToArgs()
-					args.SetArgs(rbcb.Stage, env.Broadcaster())
+					args.SetMultiple(rbcb.Stage, env.Broadcaster())
 
 					// Multicast message
 					msg = ToMessageProtocol(args)
@@ -304,7 +305,7 @@ func ReliableBroadcast(rbcb *ControlBlock, ctx context.Context, env *Env, args *
 
 				count := uint32(len(readys[hexstr]))
 
-				if count >= 2*env.F()+1 {
+				if count == 2*env.F()+1 {
 
 					// Deliver message to replica
 					env.ReplicaDeliver(ctx, msg, stage)

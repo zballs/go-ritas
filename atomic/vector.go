@@ -63,7 +63,7 @@ func AtomicBroadcastVEC(abcb *ControlBlock, ctx context.Context, env *Env, args 
 	for {
 
 		// Set stage
-		args.SetArg(abcb.Stage)
+		args.Set(abcb.Stage)
 
 		// Create child context
 		childCtx, cancel = context.WithCancel(ctx)
@@ -110,7 +110,7 @@ func AtomicBroadcastVEC(abcb *ControlBlock, ctx context.Context, env *Env, args 
 			abcb.IncrementStep()
 
 			// Set stage and payload
-			args.SetArgs(abcb.Stage, hashvector.PayloadWrap())
+			args.SetMultiple(abcb.Stage, hashvector.PayloadWrap())
 
 			// Create new child context
 			childCtx, cancel = context.WithCancel(ctx)
@@ -172,7 +172,7 @@ func AtomicBroadcastVEC(abcb *ControlBlock, ctx context.Context, env *Env, args 
 
 					if h1.IsEqual(h2) {
 
-						args.SetArgs(
+						args.SetMultiple(
 							p, // payload
 							msgs[idx].GetStages(),
 							msgs[idx].GetSender())

@@ -57,7 +57,7 @@ FOR_LOOP_1:
 	for {
 
 		// Set stage
-		args.SetArg(abcb.Stage)
+		args.Set(abcb.Stage)
 
 		// Create child context
 		childCtx, cancel = context.WithCancel(ctx)
@@ -112,7 +112,7 @@ FOR_LOOP_1:
 			childCtx, cancel = context.WithCancel(ctx)
 
 			// Set stage and payload
-			args.SetArgs(abcb.Stage, vector.PayloadWrap())
+			args.SetMultiple(abcb.Stage, vector.PayloadWrap())
 
 			// Reliable broadcast
 			rbcb = abcb.GetChild()
@@ -181,7 +181,7 @@ FOR_LOOP_1:
 			childCtx, cancel = context.WithCancel(ctx)
 
 			// Set stage and payload
-			args.SetArgs(abcb.Stage, vector.PayloadWrap())
+			args.SetMultiple(abcb.Stage, vector.PayloadWrap())
 
 			// Output to multivalue consensus
 			mvcb := abcb.GetChild()
@@ -216,7 +216,7 @@ FOR_LOOP_1:
 							stages := msgs[idx].GetStages()
 
 							// Set args
-							args.SetArgs(payload, stages, sender)
+							args.SetMultiple(payload, stages, sender)
 
 							msg = ToMessageAtomic(args)
 

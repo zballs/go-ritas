@@ -53,7 +53,7 @@ func BinaryConsensus(bccb *ControlBlock, ctx context.Context, env *Env, args *Ar
 	for {
 
 		// Set stage
-		args.SetArg(bccb.Stage)
+		args.Set(bccb.Stage)
 
 		// Create child context
 		childCtx, cancel = context.WithCancel(ctx)
@@ -114,7 +114,7 @@ func BinaryConsensus(bccb *ControlBlock, ctx context.Context, env *Env, args *Ar
 		bccb.IncrementStep()
 
 		// Set stage and payload
-		args.SetArgs(bccb.Stage, PayloadFromUint32(result))
+		args.SetMultiple(bccb.Stage, PayloadFromUint32(result))
 
 		// Create new child context
 		childCtx, cancel = context.WithCancel(ctx)
@@ -174,7 +174,7 @@ func BinaryConsensus(bccb *ControlBlock, ctx context.Context, env *Env, args *Ar
 		bccb.IncrementStep()
 
 		// Set stage and payload
-		args.SetArgs(bccb.Stage, PayloadFromUint32(result))
+		args.SetMultiple(bccb.Stage, PayloadFromUint32(result))
 
 		// Create new child context
 		childCtx, cancel = context.WithCancel(ctx)
@@ -236,7 +236,7 @@ func BinaryConsensus(bccb *ControlBlock, ctx context.Context, env *Env, args *Ar
 		if done {
 
 			// Set payload with result value
-			args.SetArg(PayloadFromUint32(result))
+			args.Set(PayloadFromUint32(result))
 
 			return args
 		}
